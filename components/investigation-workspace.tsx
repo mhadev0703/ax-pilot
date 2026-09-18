@@ -570,23 +570,39 @@ export function InvestigationWorkspace() {
             <div>
               <h2>From resolution to operational improvement</h2>
               {data?.operationalInsight.status === "available" ? (
-                <>
-                  <p>
-                    {data.operationalInsight.vdiAuthenticationTickets} VDI authentication tickets ·{" "}
-                    {data.operationalInsight.passwordResetRelated} password-reset related ·{" "}
-                    {data.operationalInsight.repeatContactRate}% repeat contact
-                  </p>
-                  <span className="subtle-tag">
-                    Target: reduce repeat VDI inquiries by {data.operationalInsight.target.relativeReduction}%
-                  </span>
-                  <small>
-                    {data.operationalInsight.measurementPeriod} · Proposed target, not measured impact. Knowledge gap: {data.operationalInsight.knowledgeGap}.
-                  </small>
-                </>
+                data.operationalInsight.scenario === "vdi_password_reset" ? (
+                  <>
+                    <p>
+                      {data.operationalInsight.vdiAuthenticationTickets} VDI authentication tickets ·{" "}
+                      {data.operationalInsight.passwordResetRelated} password-reset related ·{" "}
+                      {data.operationalInsight.repeatContactRate}% repeat contact
+                    </p>
+                    <span className="subtle-tag">
+                      Target: reduce repeat VDI inquiries by {data.operationalInsight.target.relativeReduction}%
+                    </span>
+                    <small>
+                      {data.operationalInsight.measurementPeriod} · Proposed target, not measured impact. Knowledge gap: {data.operationalInsight.knowledgeGap}.
+                    </small>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      {data.operationalInsight.groupwareAccessTickets} Groupware access tickets ·{" "}
+                      {data.operationalInsight.repeatContactRate}% repeat contact
+                    </p>
+                    <span className="subtle-tag">
+                      Target: reduce repeat workspace-access inquiries by {data.operationalInsight.target.relativeReduction}%
+                    </span>
+                    <small>
+                      {data.operationalInsight.measurementPeriod} · Proposed target, not measured impact. Improvement hypothesis: {data.operationalInsight.knowledgeGap}.
+                    </small>
+                    <small>{data.operationalInsight.caveat}</small>
+                  </>
+                )
               ) : (
                 <>
                   <p>
-                    This scenario is not tied to the measured VDI password-reset cohort. Groupware operational trends remain visible on the Operations Dashboard and require their own improvement hypothesis before a target is attached.
+                    This scenario is not tied to a measured VDI password-reset or Groupware access cohort, so no unrelated KPI is attached.
                   </p>
                   <span className="subtle-tag">No unrelated KPI attached</span>
                   <small>

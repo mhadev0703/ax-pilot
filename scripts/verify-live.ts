@@ -15,6 +15,8 @@ run(async () => {
   assert.ok(positive.result.evidence.length >= 2);
   assert.ok(positive.result.recommendedActions.length > 0);
   assert.ok(positive.result.confidence >= 1 && Number.isInteger(positive.result.confidence));
+  assert.equal(positive.operationalInsight.status, "available");
+  assert.equal(positive.operationalInsight.scenario, "vdi_password_reset");
   stage = "positive Groupware case";
   const groupware = await investigate({ question: "I transferred departments and can sign in to groupware, but I cannot open my new team workspace." });
   const groupwareIds = new Set(groupware.retrievedEvidence.map((doc) => doc.source_id));
@@ -23,6 +25,10 @@ run(async () => {
   assert.deepEqual(groupware.result.classification, { system: "Groupware", category: "Access", severity: "Medium" });
   assert.equal(groupware.result.escalationTeam, "Enterprise Applications Support");
   assert.ok(groupware.result.recommendedActions.length > 0);
+  assert.equal(groupware.operationalInsight.status, "available");
+  assert.equal(groupware.operationalInsight.scenario, "groupware_transfer_access");
+  assert.equal(groupware.operationalInsight.groupwareAccessTickets, 58);
+  assert.equal(groupware.operationalInsight.repeatContactRate, 20.7);
   stage = "unrelated question abstention";
   const unrelated = await investigate({ question: "How do I renew a secure printer maintenance contract?" });
   assert.equal(unrelated.result.status, "insufficient_evidence");

@@ -26,6 +26,7 @@ export async function investigate(input: unknown) {
       result.status === "recommendation" && result.classification.system === "VDI" && result.classification.category === "Authentication"
         ? {
             status: "available" as const,
+            scenario: "vdi_password_reset" as const,
             measurementPeriod: ticketAnalytics.measurement.current.label,
             vdiAuthenticationTickets: ticketAnalytics.vdiAuthentication.current,
             passwordResetRelated: ticketAnalytics.passwordResetRelated.current,
@@ -35,9 +36,23 @@ export async function investigate(input: unknown) {
             target: ticketAnalytics.operationalImprovement.target,
             targetStatus: ticketAnalytics.operationalImprovement.targetStatus,
           }
+        : result.status === "recommendation" && result.classification.system === "Groupware" && result.classification.category === "Access"
+          ? {
+              status: "available" as const,
+              scenario: "groupware_transfer_access" as const,
+              measurementPeriod: ticketAnalytics.measurement.current.label,
+              groupwareAccessTickets: ticketAnalytics.groupwareAccess.current,
+              repeatContactRate: ticketAnalytics.groupwareRepeatContactRate,
+              knowledgeGap: ticketAnalytics.groupwareOperationalImprovement.title,
+              recommendations: ticketAnalytics.groupwareOperationalImprovement.recommendation,
+              target: ticketAnalytics.groupwareOperationalImprovement.target,
+              targetStatus: ticketAnalytics.groupwareOperationalImprovement.targetStatus,
+              caveat:
+                "The measured Groupware Access cohort is not tagged to department transfers. The proposed checklist and notification require a transfer-specific follow-up measurement.",
+            }
         : {
             status: "not_applicable" as const,
-            reason: "This request does not match the measured VDI password-reset cohort, so no unrelated operational insight is attached.",
+            reason: "This request does not match a measured VDI password-reset or Groupware access cohort, so no unrelated operational insight is attached.",
           },
     trace: {
       datasetVersion: DATASET_VERSION,

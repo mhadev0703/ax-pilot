@@ -158,8 +158,25 @@
     }
   ],
   "operationalInsight": {
-    "status": "not_available",
-    "reason": "The first slice contains knowledge documents only. Ticket volume, repeat rate, trends, and improvement impact require a structured ticket dataset."
+    "status": "available",
+    "scenario": "vdi_password_reset",
+    "measurementPeriod": "Aug 15 – Sep 13, 2026",
+    "vdiAuthenticationTickets": 87,
+    "passwordResetRelated": 39,
+    "repeatContactRate": 24.1,
+    "knowledgeGap": "Password reset → VDI reconnect procedure",
+    "recommendations": [
+      "Update password-reset communication",
+      "Improve the VDI FAQ",
+      "Add reconnect instructions",
+      "Monitor the same cohort for 30 days"
+    ],
+    "target": {
+      "metric": "Repeat VDI authentication inquiries",
+      "relativeReduction": 30,
+      "direction": "reduce"
+    },
+    "targetStatus": "proposed_not_measured"
   },
   "trace": {
     "datasetVersion": "vdi-slice-1",

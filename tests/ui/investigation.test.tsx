@@ -97,6 +97,8 @@ test("workspace supports review, evidence navigation, loading, failure, and abst
     assert.equal(document.querySelectorAll(".evidence-card").length, 4);
     assert.ok(text().includes("Hypothesis"));
     assert.ok(text().includes("Uncalibrated estimate"));
+    assert.ok(text().includes("87 VDI authentication tickets"));
+    assert.ok(text().includes("Proposed target, not measured impact"));
     const filter = document.querySelector("select")!;
     await act(async () => {
       filter.value = "policy";

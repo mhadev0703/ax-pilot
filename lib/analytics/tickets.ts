@@ -323,6 +323,16 @@ export function calculateTicketAnalytics(tickets: SupportTicket[]) {
       previous: previousGroupwareAccess,
       change: change(currentGroupwareAccess, previousGroupwareAccess),
     },
+    groupwareRepeatContactRate: percentage(
+      count(
+        current,
+        (ticket) =>
+          ticket.system === "Groupware" &&
+          ticket.category === "Access" &&
+          ticket.is_repeat_contact,
+      ),
+      currentGroupwareAccess,
+    ),
     dailySupportVolume: dailyCohortVolume(current),
     categoryVolume: grouped,
     operationalImprovement: {
@@ -338,6 +348,23 @@ export function calculateTicketAnalytics(tickets: SupportTicket[]) {
       target: {
         metric: "Repeat VDI authentication inquiries",
         relativeReduction: 30,
+        direction: "reduce" as const,
+      },
+      targetStatus: "proposed_not_measured" as const,
+    },
+    groupwareOperationalImprovement: {
+      title: "Department transfer → workspace access readiness",
+      observation:
+        "The measured Groupware Access cohort does not isolate department-transfer cases. A transfer checklist and role-synchronization communication are proposed hypotheses for reducing repeat contacts in that scenario.",
+      recommendation: [
+        "Add workspace access steps to the department-transfer checklist",
+        "Send a role-synchronization and reconnect notification after approved transfers",
+        "Route unresolved access to Enterprise Applications Support",
+        "Measure the transfer-related cohort separately for 30 days",
+      ],
+      target: {
+        metric: "Repeat Groupware workspace-access inquiries after department transfer",
+        relativeReduction: 20,
         direction: "reduce" as const,
       },
       targetStatus: "proposed_not_measured" as const,

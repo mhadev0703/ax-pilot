@@ -34,6 +34,11 @@ test("ticket analytics derives the dashboard KPI values from raw synthetic ticke
     previous: 66,
     change: -12.1,
   });
+  assert.equal(analytics.groupwareRepeatContactRate, 20.7);
+  assert.equal(
+    analytics.groupwareOperationalImprovement.target.relativeReduction,
+    20,
+  );
   assert.equal(analytics.dailySupportVolume.length, 30);
   assert.equal(
     analytics.dailySupportVolume.reduce((total, day) => total + day.vdiAuthentication, 0),
