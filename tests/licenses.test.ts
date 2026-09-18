@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { GET } from "../app/api/analytics/licenses/route";
+import { calculateLicenseRecommendationsFromDatabaseRows } from "../lib/analytics/database";
 import { calculateLicenseRecommendation, syntheticLicenseRecords, syntheticLicenseRecommendations } from "../lib/analytics/licenses";
 
 test("collaboration renewal quantity uses active users, reservations, demand, buffer, and contract floor", () => {
@@ -26,12 +26,9 @@ test("contract minimum constrains recommendation and temporary inactive users ar
   assert.ok(recommendation.constraints.some((constraint) => constraint.includes("not treated as automatic removals")));
 });
 
-test("license optimization API exposes synthetic recommendation data without mutation endpoint", async () => {
-  const response = await GET();
-  assert.equal(response.status, 200);
-  assert.equal(response.headers.get("cache-control"), "no-store");
-  const body = await response.json();
-  assert.equal(body.synthetic, true);
-  assert.equal(body.recommendations.length, 5);
-  assert.equal(body.recommendations[0].recommendedSeats, 380);
+test("database-shaped license rows use the same deterministic recommendation calculation", () => {
+  const recommendations = calculateLicenseRecommendationsFromDatabaseRows(syntheticLicenseRecords);
+  assert.equal(recommendations.length, 5);
+  assert.equal(recommendations[0].recommendedSeats, 380);
+  assert.equal(recommendations[0].humanApprovalRequired, true);
 });

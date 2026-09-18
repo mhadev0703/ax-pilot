@@ -16,6 +16,8 @@ export type LicenseRecord = {
   synthetic: true;
 };
 
+// Canonical local source for seed scripts and offline tests. Runtime analytics
+// reads the equivalent synthetic rows from Supabase through database.ts.
 export const syntheticLicenseRecords: LicenseRecord[] = [
   { product: "Enterprise Collaboration Suite", contracted_seats: 500, active_users_30d: 287, active_users_90d: 302, reserved_seats: 23, upcoming_demand: 35, temporary_inactive_users: 16, department_survey_demand: 12, annual_unit_cost: 144, annual_cost: 72_000, renewal_date: "2026-12-01", contract_minimum_seats: 350, recommended_buffer: 20, contract_change_allowed: true, synthetic: true },
   { product: "VDI Standard", contracted_seats: 940, active_users_30d: 811, active_users_90d: 846, reserved_seats: 41, upcoming_demand: 38, temporary_inactive_users: 29, department_survey_demand: 18, annual_unit_cost: 216, annual_cost: 203_040, renewal_date: "2026-12-15", contract_minimum_seats: 800, recommended_buffer: 35, contract_change_allowed: true, synthetic: true },

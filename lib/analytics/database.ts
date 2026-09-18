@@ -38,6 +38,13 @@ const licenseSchema = z.object({
 });
 
 // DB stores structured synthetic inputs; calculations remain deterministic code.
+// Exported separately so offline tests can validate the same DB-row boundary.
+export function calculateTicketAnalyticsFromDatabaseRows(data: unknown) {
+  const parsed = z.array(ticketSchema).safeParse(data);
+  if (!parsed.success) throw new AppError("TICKET_ANALYTICS_DATA_INVALID", "Ticket analytics data failed validation.", 503);
+  return calculateTicketAnalytics(parsed.data as SupportTicket[]);
+}
+
 export async function getTicketAnalyticsFromDatabase() {
   const { data, error } = await getSupabase()
     .from("support_tickets")
@@ -46,9 +53,13 @@ export async function getTicketAnalyticsFromDatabase() {
     .order("created_at", { ascending: true });
   if (error) throw new AppError("TICKET_ANALYTICS_READ_FAILED", "Ticket analytics data could not be loaded.", 503);
 
-  const parsed = z.array(ticketSchema).safeParse(data);
-  if (!parsed.success) throw new AppError("TICKET_ANALYTICS_DATA_INVALID", "Ticket analytics data failed validation.", 503);
-  return calculateTicketAnalytics(parsed.data as SupportTicket[]);
+  return calculateTicketAnalyticsFromDatabaseRows(data);
+}
+
+export function calculateLicenseRecommendationsFromDatabaseRows(data: unknown) {
+  const parsed = z.array(licenseSchema).safeParse(data);
+  if (!parsed.success) throw new AppError("LICENSE_ANALYTICS_DATA_INVALID", "License analytics data failed validation.", 503);
+  return parsed.data.map((record) => calculateLicenseRecommendation(record as LicenseRecord));
 }
 
 export async function getLicenseRecommendationsFromDatabase() {
@@ -59,7 +70,5 @@ export async function getLicenseRecommendationsFromDatabase() {
     .order("product", { ascending: true });
   if (error) throw new AppError("LICENSE_ANALYTICS_READ_FAILED", "License analytics data could not be loaded.", 503);
 
-  const parsed = z.array(licenseSchema).safeParse(data);
-  if (!parsed.success) throw new AppError("LICENSE_ANALYTICS_DATA_INVALID", "License analytics data failed validation.", 503);
-  return parsed.data.map((record) => calculateLicenseRecommendation(record as LicenseRecord));
+  return calculateLicenseRecommendationsFromDatabaseRows(data);
 }

@@ -167,6 +167,8 @@ function buildWindow(prefix: string, start: string, buckets: Bucket[]) {
   );
 }
 
+// Canonical local source for seed scripts and offline tests. Runtime analytics
+// reads the equivalent synthetic rows from Supabase through database.ts.
 export const syntheticSupportTickets: SupportTicket[] = [
   ...buildWindow("SYN-CUR", "2026-08-15T00:00:00.000Z", currentBuckets),
   ...buildWindow("SYN-PRV", "2026-07-16T00:00:00.000Z", previousBuckets),

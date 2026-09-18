@@ -6,7 +6,7 @@ import { answer } from "../rag/answer";
 import { retrieve } from "../rag/retrieve";
 import { DATASET_VERSION, EMBEDDING_MODEL, RETRIEVAL_THRESHOLD, RETRIEVAL_TOP_K } from "../rag/config";
 import { investigationInputSchema } from "../rag/schema";
-import { getTicketAnalytics } from "../analytics";
+import { getTicketAnalyticsFromDatabase } from "../analytics/database";
 
 export async function investigate(input: unknown) {
   const { question } = investigationInputSchema.parse(input);
@@ -15,7 +15,7 @@ export async function investigate(input: unknown) {
   const documents = await retrieve(question);
   const retrievedAt = performance.now();
   const result = await answer(question, documents);
-  const ticketAnalytics = getTicketAnalytics();
+  const ticketAnalytics = await getTicketAnalyticsFromDatabase();
   return {
     requestId: randomUUID(),
     synthetic: true,

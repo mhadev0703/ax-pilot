@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { GET } from "../app/api/analytics/tickets/route";
+import { calculateTicketAnalyticsFromDatabaseRows } from "../lib/analytics/database";
 import {
   ANALYTICS_WINDOWS,
   calculateTicketAnalytics,
@@ -65,12 +65,9 @@ test("synthetic ticket flags remain inside their defined cohorts and windows do 
   }
 });
 
-test("ticket analytics API exposes computed synthetic metrics with no caching", async () => {
-  const response = await GET();
-  assert.equal(response.status, 200);
-  assert.equal(response.headers.get("cache-control"), "no-store");
-  const body = await response.json();
-  assert.equal(body.supportRequests, 284);
-  assert.equal(body.operationalImprovement.target.relativeReduction, 30);
-  assert.equal(body.synthetic, true);
+test("database-shaped ticket rows use the same deterministic KPI calculation", () => {
+  const analytics = calculateTicketAnalyticsFromDatabaseRows(syntheticSupportTickets);
+  assert.equal(analytics.supportRequests, 284);
+  assert.equal(analytics.operationalImprovement.target.relativeReduction, 30);
+  assert.equal(analytics.synthetic, true);
 });
