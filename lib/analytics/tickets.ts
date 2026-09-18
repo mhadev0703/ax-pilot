@@ -213,6 +213,30 @@ function change(current: number, previous: number) {
     : Math.round(((current - previous) / previous) * 1000) / 10;
 }
 
+function dailyCohortVolume(tickets: SupportTicket[]) {
+  const currentDays = Array.from({ length: 30 }, (_, index) => {
+    const date = new Date(ANALYTICS_WINDOWS.current.start);
+    date.setUTCDate(date.getUTCDate() + index);
+    return date.toISOString().slice(0, 10);
+  });
+
+  return currentDays.map((date) => {
+    const dailyTickets = tickets.filter((ticket) => ticket.created_at.startsWith(date));
+    return {
+      date,
+      label: date.slice(5).replace("-", "/"),
+      vdiAuthentication: count(
+        dailyTickets,
+        (ticket) => ticket.system === "VDI" && ticket.category === "Authentication",
+      ),
+      groupwareAccess: count(
+        dailyTickets,
+        (ticket) => ticket.system === "Groupware" && ticket.category === "Access",
+      ),
+    };
+  });
+}
+
 export function calculateTicketAnalytics(tickets: SupportTicket[]) {
   const current = tickets.filter((ticket) =>
     inWindow(ticket, ANALYTICS_WINDOWS.current),
@@ -299,6 +323,7 @@ export function calculateTicketAnalytics(tickets: SupportTicket[]) {
       previous: previousGroupwareAccess,
       change: change(currentGroupwareAccess, previousGroupwareAccess),
     },
+    dailySupportVolume: dailyCohortVolume(current),
     categoryVolume: grouped,
     operationalImprovement: {
       title: "Password reset → VDI reconnect procedure",

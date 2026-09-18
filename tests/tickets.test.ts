@@ -34,6 +34,15 @@ test("ticket analytics derives the dashboard KPI values from raw synthetic ticke
     previous: 66,
     change: -12.1,
   });
+  assert.equal(analytics.dailySupportVolume.length, 30);
+  assert.equal(
+    analytics.dailySupportVolume.reduce((total, day) => total + day.vdiAuthentication, 0),
+    87,
+  );
+  assert.equal(
+    analytics.dailySupportVolume.reduce((total, day) => total + day.groupwareAccess, 0),
+    58,
+  );
   assert.equal(analytics.measurement.current.label, "Aug 15 – Sep 13, 2026");
   assert.equal(analytics.measurement.previous.label, "Jul 16 – Aug 14, 2026");
 });

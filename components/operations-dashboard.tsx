@@ -1,4 +1,8 @@
-import { getTicketAnalyticsFromDatabase } from "@/lib/analytics/database";
+import {
+  getLicenseRecommendationsFromDatabase,
+  getTicketAnalyticsFromDatabase,
+} from "@/lib/analytics/database";
+import { SupportVolumeChart } from "./support-volume-chart";
 
 function Delta({
   value,
@@ -18,8 +22,12 @@ function Delta({
 }
 
 export async function OperationsDashboard() {
-  const analytics = await getTicketAnalyticsFromDatabase();
+  const [analytics, licenseRecommendations] = await Promise.all([
+    getTicketAnalyticsFromDatabase(),
+    getLicenseRecommendationsFromDatabase(),
+  ]);
   const maxVolume = analytics.categoryVolume[0]?.value ?? 1;
+  const maxLicenseSeats = Math.max(...licenseRecommendations.map((item) => item.currentSeats), 1);
   return (
     <div className="dashboard-shell">
       <header className="topbar">
@@ -89,10 +97,10 @@ export async function OperationsDashboard() {
             </p>
           </article>
           <article className="metric-card metric-card-muted">
-            <span>LICENSE SAVINGS</span>
-            <strong>See optimization</strong>
+            <span>LICENSE REVIEW INPUTS</span>
+            <strong>{licenseRecommendations.length}</strong>
             <p>
-              Potential savings are calculated per product, with a human approval boundary.
+              Products with utilization, demand, and contract constraints shown below.
             </p>
           </article>
         </section>
@@ -162,6 +170,19 @@ export async function OperationsDashboard() {
               definitions.
             </p>
           </article>
+          <article className="dashboard-card support-volume-card">
+            <div className="card-heading">
+              <div>
+                <span className="eyebrow">SUPPORT VOLUME TREND</span>
+                <h2>Daily volume in the current measurement window</h2>
+              </div>
+              <span className="small muted">30-day UTC cohort</span>
+            </div>
+            <SupportVolumeChart points={analytics.dailySupportVolume} />
+            <p className="small muted">
+              This trend describes request volume only. It does not confirm a root cause or an improvement outcome.
+            </p>
+          </article>
           <article className="dashboard-card volume-card">
             <div className="card-heading">
               <div>
@@ -185,6 +206,37 @@ export async function OperationsDashboard() {
                 </div>
               ))}
             </div>
+          </article>
+          <article className="dashboard-card license-utilization-card">
+            <div className="card-heading">
+              <div>
+                <span className="eyebrow">LICENSE UTILIZATION</span>
+                <h2>Contracted seats compared with 90-day activity</h2>
+              </div>
+              <a href="/optimization">Review assumptions ↗</a>
+            </div>
+            <div className="license-bar-list">
+              {licenseRecommendations.map((item) => (
+                <div className="license-bar-row" key={item.product}>
+                  <div>
+                    <span>{item.product}</span>
+                    <small>{item.utilization}% 90-day utilization</small>
+                  </div>
+                  <div className="license-bars" aria-label={`${item.product}: ${item.activeUsers90d} active users out of ${item.currentSeats} contracted seats`}>
+                    <i className="contracted" style={{ width: `${(item.currentSeats / maxLicenseSeats) * 100}%` }} />
+                    <i className="active" style={{ width: `${(item.activeUsers90d / maxLicenseSeats) * 100}%` }} />
+                  </div>
+                  <strong>{item.activeUsers90d} / {item.currentSeats}</strong>
+                </div>
+              ))}
+            </div>
+            <div className="license-chart-key">
+              <span><i className="contracted" />Contracted seats</span>
+              <span><i className="active" />90-day active users</span>
+            </div>
+            <p className="small muted">
+              Activity is one review input. Renewal recommendations also account for reservations, upcoming demand, buffers, and contract constraints.
+            </p>
           </article>
           <article className="dashboard-card opportunity-card">
             <div className="opportunity-label">
