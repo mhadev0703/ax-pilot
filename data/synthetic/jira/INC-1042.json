@@ -1,0 +1,9 @@
+{
+  "source_type": "jira",
+  "source_id": "INC-1042",
+  "title": "VDI Login Failure After Password Reset",
+  "content": "Synthetic incident at Example Manufacturing. Several users could not access VDI after changing their corporate AD password. Existing VDI sessions used cached credentials. Some affected users had locked AD accounts. Support verified the account lock status and asked users to fully sign out of existing VDI sessions, then reauthenticate with the updated password. Unresolved cases were escalated to Identity Support. This historical incident does not confirm the cause of a new user's issue.",
+  "system": "VDI", "category": "Authentication", "department": "IT",
+  "created_at": "2026-08-18T14:00:00Z",
+  "metadata": { "synthetic": true, "company": "Example Manufacturing", "dataset_version": "ops-slice-1", "allowed_actions": ["verify_lock_status", "sign_out_vdi", "reauthenticate"] }
+}

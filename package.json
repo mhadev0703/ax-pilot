@@ -1,0 +1,45 @@
+{
+  "name": "enterprise-it-ax",
+  "version": "0.7.0-milestone.1",
+  "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build --webpack",
+    "start": "next start --hostname 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
+    "check:env": "node --conditions=react-server --import tsx scripts/check-env.ts",
+    "seed:documents": "node --conditions=react-server --import tsx scripts/seed-documents.ts",
+    "seed:tickets": "node --conditions=react-server --import tsx scripts/seed-tickets.ts",
+    "seed:licenses": "node --conditions=react-server --import tsx scripts/seed-licenses.ts",
+    "retrieve": "node --conditions=react-server --import tsx scripts/retrieve.ts",
+    "evaluate:retrieval": "node --conditions=react-server --import tsx scripts/evaluate-retrieval.ts",
+    "investigate": "node --conditions=react-server --import tsx scripts/investigate.ts",
+    "test:live": "node --conditions=react-server --import tsx scripts/verify-live.ts",
+    "test:ui": "node --import tsx --test tests/ui/*.test.tsx"
+  },
+  "dependencies": {
+    "@next/env": "16.3.5",
+    "@supabase/supabase-js": "2.116.0",
+    "next": "16.3.5",
+    "openai": "7.15.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "0.0.1",
+    "zod": "4.6.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/jsdom": "30.0.0",
+    "@types/node": "26.5.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "jsdom": "30.0.1",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2"
+  }
+}

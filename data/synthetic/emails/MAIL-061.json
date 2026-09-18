@@ -1,0 +1,9 @@
+{
+  "source_type": "email",
+  "source_id": "MAIL-061",
+  "title": "Unable to Open Engineering Workspace After Transfer",
+  "content": "Synthetic support email at Example Manufacturing. User report: I transferred to Engineering this week. I can sign in to groupware and see the home page, but I receive an access message when I open the Engineering workspace. I signed out once but did not close my browser. This email records reported symptoms only; membership, role status, and resolution have not been verified.",
+  "system": "Groupware", "category": "Access", "department": "Engineering",
+  "created_at": "2026-08-28T11:00:00Z",
+  "metadata": { "synthetic": true, "company": "Example Manufacturing", "dataset_version": "ops-slice-1", "allowed_actions": [] }
+}

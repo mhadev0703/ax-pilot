@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.env*
+!.env.example
+*.tsbuildinfo
+work/
+outputs/
+AGENTS.md
+skills/
+.DS_Store
+.env

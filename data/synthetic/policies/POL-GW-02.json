@@ -1,0 +1,9 @@
+{
+  "source_type": "policy",
+  "source_id": "POL-GW-02",
+  "title": "Groupware Workspace Access Governance Policy",
+  "content": "Synthetic groupware access policy for Example Manufacturing. IT Support may view workspace membership and role synchronization status to investigate access requests. Only an authorized Enterprise Applications administrator may change workspace membership, roles, or access privileges after validating the approved business request. This decision-support platform must not alter workspace access, department records, roles, or privileges. The policy does not define synchronization timing or authorize bypassing workspace controls. Korean reference summary: 부서 이동 후 그룹웨어 로그인은 되지만 새 팀 워크스페이스에 접근할 수 없는 경우, IT Support는 membership과 역할 동기화 상태만 조회할 수 있습니다. 권한 변경은 authorized Enterprise Applications administrator만 수행합니다.",
+  "system": "Groupware", "category": "Access", "department": "IT",
+  "created_at": "2026-08-12T09:00:00Z",
+  "metadata": { "synthetic": true, "company": "Example Manufacturing", "dataset_version": "ops-slice-1", "allowed_actions": ["verify_groupware_membership", "verify_role_sync"] }
+}
