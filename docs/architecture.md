@@ -1,30 +1,46 @@
-# Architecture decisions — milestone 1
+# Architecture — v0.7
 
-1. **Use a bounded workflow.** Next.js API and CLI call the same `investigate` function. Retrieval precedes structured reasoning. No agent framework, autonomous loop, or tools for modifying enterprise systems.
-2. **Separate evidence and metrics.** `enterprise_documents` contains only synthetic knowledge. `support_tickets` and `licenses` are separate structured tables. Dashboard and optimization server components read validated synthetic inputs from Supabase, then calculate metrics and recommendations in deterministic TypeScript. Knowledge document count is never used as ticket volume.
-3. **Keep the first vector space fixed.** Seed and query use `text-embedding-3-small`, 1536 dimensions. SQL constrains dimension/model; the query also filters dataset version. A model or dimension change requires coordinated migration and full re-embedding, not only an env edit.
-4. **Use exact cosine search initially.** Four documents do not justify approximate-nearest-neighbor indexes, chunking infrastructure, or reranking. Source IDs remain stable on reseed. Metadata defines human-reviewed allowed actions; it must be controlled by trusted dataset maintainers.
-5. **Fail explicitly.** Missing credentials, provider outages, malformed outputs, and unknown source IDs are errors. An empty or insufficient evidence result is an abstention. Those are distinct conditions. Live testing showed that model-copied quotes can drift; the model now selects IDs and the server attaches complete original short-document text. This guarantees source-text fidelity, not semantic entailment of the generated explanation.
-6. **Bound output authority.** The model selects action IDs. The server materializes reviewed action text only if cited sources permit it. Missing guide causes abstention; missing IAM policy withholds actions. Actual execution is absent.
-7. **Treat confidence as provisional.** The 85/49 caps and 60 escalation threshold are application rules, not an empirical calibration. The similarity threshold requires positive/negative query evaluation. Model-provided cause descriptions are not formally proven by exact quote matching.
-8. **Keep external clients server-only.** CLI uses the `react-server` condition to load Next.js's `server-only` marker. Runtime env validation is lazy so builds and offline tests do not need credentials. The Supabase service role is powerful and must never enter a browser bundle.
-9. **Trace per request, without inventing an audit system.** The response records source identities, models, retrieval parameters, dataset version, timing, and a request ID. This is not a persistent, authenticated approval/audit trail.
+AXPilot is a bounded Enterprise IT operations decision-support PoC. It supports investigation, operational analysis, and license-renewal review. It does not connect to live enterprise systems or execute an account, access, contract, or license change.
 
-## Next gate
+## Request flow
 
-SQL, env, four-document embedding seed, retrieval, and initial live checks have passed as of September 14, 2026 (America/New_York). Support Investigation UI now calls the same API and displays sources, provisional causes, reviewed action text, confidence caveats, and escalation. A DOM integration test covers state transitions; live HTTP verification passed. Browser launch failed in the current sandbox, so screenshot and mobile visual QA remain pending. Expand evaluation beyond the three backend smoke-test cases before claiming general reliability.
+```mermaid
+flowchart LR
+  Q[Support request] --> G{Supported scope gate}
+  G -->|VDI + password change\nor Groupware + transfer/role context| E[OpenAI embedding]
+  G -->|Missing context or out of scope| T[Human triage]
+  E --> V[Supabase pgvector candidate pool]
+  V --> D[Deterministic source-diversity selection]
+  D --> L[Structured AI response]
+  L --> C[Server grounding and action controls]
+  C --> R[Evidence, confidence, escalation]
+  R --> H[Human review or escalation]
 
-## v0.7 boundaries and next integration gate
+  S[Supabase tickets and licenses] --> A[Deterministic TypeScript analytics]
+  A --> O[Dashboard and renewal recommendation]
+```
 
-- Structured ticket and license datasets are seeded to SQL with fixed demo date windows; Dashboard and Optimization use validated database reads while their API contract tests remain deterministic and offline.
-- Support workspace: request, analysis, evidence, explicitly provisional confidence, escalation and source excerpts.
-- License recommendation: deterministic active/reserved/demand/temporary inactive/buffer/contract calculations; documented overlap assumptions prevent double counting. Review/Approve/Reject records only a demo decision, never executes a change.
-- Dashboard uses these same computed results, with sample size, measurement period, targets vs measured outcomes, and synthetic provenance visible.
+## Key decisions
 
-v1.0 may extend workflows for provisioning, knowledge improvement, adoption/override metrics, vendor management, and evaluation. No tables or frameworks are introduced for those features now.
+1. **Bound the supported requests before retrieval.** v0.7 accepts VDI authentication after a password change and Groupware workspace access after a department or role transfer. A request without the required system-and-change context is returned as insufficient evidence for human triage without calling retrieval or the response model. The gate is a scope control, not an issue diagnosis.
+2. **Separate unstructured evidence from structured facts.** `enterprise_documents` stores synthetic Jira incidents, Confluence guides, support emails, and policies. `support_tickets` and `licenses` store synthetic operational inputs. Deterministic TypeScript calculates all counts, rates, quantities, and savings after validated Supabase reads.
+3. **Keep the vector space stable.** The seed and query path use `text-embedding-3-small` at 1,536 dimensions. SQL constrains model and dimension, and retrieval filters by dataset version. Changing either requires a coordinated migration and full re-embedding.
+4. **Use a bounded candidate pool with source diversity.** Retrieval fetches eight vector candidates, rejects the request when the best candidate is below the `0.35` relevance gate, then retains up to four documents from the leading system/category. One troubleshooting guide and one governance policy are retained when available; this prevents symptom-heavy incidents and emails from displacing action boundaries. The returned order preserves vector similarity rank.
+5. **Ground actions in reviewed metadata.** Incidents and emails may support a hypothesis but carry no authority. Only a guide or policy can allow an action through `metadata.allowed_actions`. The server validates selected source IDs and materializes reviewed action text; it never exposes executable privileged actions.
+6. **Treat causes and confidence as provisional.** A historical incident is not a diagnosis of the current account. Confidence is an uncalibrated evidence-adequacy estimate with server-side caps, not a vector score, accuracy rate, or probability of resolution.
+7. **Keep external clients server-only.** OpenAI and the Supabase service role stay on the server. Environment validation is lazy so builds and offline tests do not need credentials. The service role must never be exposed through a browser bundle.
+8. **Trace a request without overstating audit capability.** Responses include source identities, model names, retrieval parameters, dataset version, timing, and a request ID. This is diagnostic trace data, not a persistent authenticated audit or approval trail.
 
-## Implementation references
+## Evaluation and verification
 
-- [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs): Responses parse with Zod.
-- [Supabase vector columns](https://supabase.com/docs/guides/ai/vector-columns): pgvector and RPC cosine search.
-- [Next.js installation](https://nextjs.org/docs/app/getting-started/installation): App Router setup.
+`retrieval-eval-v1` contains 24 synthetic cases: 16 supported paraphrases across VDI and Groupware, including four Korean requests; three privileged or source-fabrication contexts; four out-of-scope requests; and one ambiguous request. It records source ID, type, similarity rank, and required guide/policy recall.
+
+The evaluation is a regression set, not a model-accuracy benchmark. The ambiguous request is allowed to be informative to retrieval evaluation but must stop at the application scope gate in the live workflow. `npm run test:live` verifies grounded VDI and Groupware responses, out-of-scope abstention, ambiguous-request abstention, and privileged-request escalation. Saved paid-run output stays in ignored `outputs/` files without secrets.
+
+## v0.7 limits and extension gate
+
+- Eight short synthetic documents are stored as one document per chunk. There is no chunking, hybrid search, ANN index, or live Jira/Confluence/AD integration.
+- Dashboard and Optimization read synthetic Supabase rows. The UI does not represent a production reporting cadence, adoption rate, or realized saving.
+- Review controls record only local demo state. Human approval and external execution happen outside AXPilot.
+
+Future work should add a use case only after it has a clear scope boundary, reviewed evidence sources, structured data owner, safe action catalog, evaluation cases, and a measurable follow-up KPI.

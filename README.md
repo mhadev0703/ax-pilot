@@ -22,6 +22,8 @@ AXPilot uses RAG to retrieve relevant enterprise knowledge from synthetic Jira i
 - **Structured sources** — ticket counts, repeat-contact rates, license utilization, quantities, and savings are calculated in deterministic TypeScript from synthetic Supabase data.
 - **Human decisions** — privileged account changes, security-sensitive actions, license removal, and contract changes remain outside the application.
 
+The investigation workflow accepts only its two bounded scenarios: VDI authentication after a password change, and Groupware workspace access after a department or role transfer. Requests without enough system-and-change context stop at human triage rather than being forced into a recommendation.
+
 ## Demo scenarios
 
 ### Support Investigation
@@ -31,6 +33,8 @@ AXPilot uses RAG to retrieve relevant enterprise knowledge from synthetic Jira i
 AXPilot retrieves the relevant Jira incident, troubleshooting guide, support email, and IAM policy. It returns an issue classification, provisional likely cause, reviewed troubleshooting actions, confidence, escalation recommendation, and source cards.
 
 The same evidence-first workflow also supports a Groupware workspace-access issue after a department transfer. Unsupported subjects, such as secure-printer contract renewal, abstain and route to human triage.
+
+The retrieval layer keeps the troubleshooting guide and governance policy with relevant historical evidence so symptom-heavy sources do not displace action boundaries. Source cards retain their vector-similarity order.
 
 ### License Decision Support
 
@@ -67,6 +71,12 @@ The Dashboard measures synthetic support volume, VDI authentication demand, pass
 
 License savings are potential gross savings, not realized savings. The application has no live Jira, Confluence, Active Directory, vendor, contract, or license-management integration. It never executes privileged actions.
 
+## Validation
+
+`retrieval-eval-v1` is a 24-case synthetic regression set: 16 supported VDI and Groupware paraphrases, including four Korean requests; three privileged or source-fabrication contexts; four out-of-scope requests; and one ambiguous request. It verifies required guide/policy recall and out-of-scope retrieval behavior. It is not a general retrieval-accuracy benchmark.
+
+`npm run test:live` separately verifies grounded VDI and Groupware responses, out-of-scope abstention, ambiguous-request triage without a model call, and privileged-request escalation. Live scripts write ignored reports under `outputs/` and use the caller's API credentials.
+
 ## Run locally
 
 Use Node 24 or newer.
@@ -85,7 +95,16 @@ npm run seed:licenses
 npm run dev
 ```
 
-`seed:documents` and `test:live` make OpenAI API calls when run with your own API key. Validate the implementation with `npm run typecheck`, `npm test`, and `npm run test:ui`.
+`seed:documents`, `evaluate:retrieval`, and `test:live` make OpenAI API calls when run with your own API key. Validate the implementation with:
+
+```sh
+npm run typecheck
+npm test
+npm run test:ui
+npm run evaluate:retrieval
+npm run test:live
+npm run build
+```
 
 ## Documentation
 

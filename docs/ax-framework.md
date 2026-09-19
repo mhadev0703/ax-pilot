@@ -1,26 +1,46 @@
 # AX operating hypothesis
 
-The operating problem is recurring support demand and avoidable licensing cost. AI is used where language interpretation and evidence synthesis help; humans retain authority over sensitive or binding decisions.
+The operating problem is not simply answering tickets faster. It is reducing recurring support demand and making cost decisions explainable while preserving human authority over sensitive changes.
 
-## Five-day scope and gates
+## v0.7 operating model
 
-| Stage | Deliverable | Exit evidence |
-| --- | --- | --- |
-| Day 1 | VDI backend vertical slice | Real embeddings, all four source identities retrieved, structured recommendation, negative case abstains |
-| Day 2 | Support Investigation workspace | User can inspect actual sources, cause uncertainty, action owners, escalation |
-| Day 3 | Structured ticket analytics | Reproducible cohort/window/count/rate calculations and operational insight |
-| Day 4 | License decision support | Contract-aware arithmetic, explained assumptions, review decision without execution |
-| Day 5 | Integrated dashboard and portfolio walkthrough | Tested scenarios, honest limitations, business/KPI/governance narrative |
+| Surface | Operational question | AI or deterministic role | Human ownership |
+| --- | --- | --- | --- |
+| Support Investigation | What evidence supports a safe next step? | Retrieve evidence, draft a structured recommendation, expose uncertainty and escalation | Verify live state; authorize any account or access change |
+| Operations Dashboard | Which request patterns may indicate a knowledge or process gap? | Calculate volumes, trends, repeat-contact rates, and proposed improvement targets | Approve communications, process changes, and follow-up measurement |
+| License Optimization | What renewal quantity balances use, demand, constraints, and cost? | Deterministically calculate a recommendation and potential gross saving | Review, approve, negotiate, and execute any contract change |
 
-The first-slice backend passed its initial live gate on September 14, 2026 (America/New_York). The three product surfaces now use bounded synthetic demo data; the next gate is Supabase persistence for structured ticket and license records, followed by a portfolio walkthrough. A three-case smoke test is not a broad model quality benchmark.
+```mermaid
+flowchart TD
+  U[User request] --> I[Evidence-backed investigation]
+  I --> X{Resolved or escalated}
+  X --> A[Structured operational analytics]
+  A --> G[Knowledge or process-gap hypothesis]
+  G --> D[Human decision]
+  D --> M[Comparable KPI re-measurement]
+  M --> G
+```
+
+## Current operational hypotheses
+
+**VDI authentication after password reset.** The current synthetic 30-day cohort has 87 VDI authentication tickets, 39 password-reset-related tickets, and a 24.1% repeat-contact rate. The proposed intervention is clearer password-reset communication, reconnect instructions, and a revised FAQ. The proposed KPI is a 30% reduction in repeat VDI authentication inquiries after a comparable 30-day follow-up. No reduction has been measured.
+
+**Groupware workspace access after transfer.** The current synthetic Groupware Access cohort has 58 tickets and a 20.7% repeat-contact rate. This cohort is not tagged to department transfers, so transfer checklist and role-synchronization communication are hypotheses, not observed causes. The next measurement must isolate transfer-related cases before assessing the proposed 20% reduction target.
+
+**Collaboration-license renewal.** The Enterprise Collaboration Suite recommendation uses 302 90-day active users, 23 reserved seats, 35 upcoming-demand seats, a defined buffer, and a contract minimum. It recommends 380 renewal seats and $17,280 potential annual gross saving. The saving is neither approved nor realized.
 
 ## Evaluation before scale-up
 
-- Retrieval: source recall on the canonical VDI case, paraphrases, irrelevant requests, and missing-policy scenarios. Inspect relevance, not just returned count.
-- Generation: citation identity/quote checks plus human scoring of claim support and correct distinction between history and current symptoms.
-- Governance: privileged requests, instruction injection in questions/documents, unsupported policy details, and model refusal/incomplete output.
-- Operations: same-cohort baseline vs follow-up repeat contacts after a human-approved communication/FAQ change. Improvement must not be claimed from retrieval accuracy alone.
-- Economics: gross potential license savings minus incremental AI/platform/operating cost; distinguish potential from approved and realized savings.
-- Adoption: use by eligible support staff, recommendation acceptance/override with reasons, and training/communication effort. No fabricated adoption percentage.
+The project evaluates the whole workflow rather than treating fluent generated text as success.
 
-An initial four-source corpus is a pipeline proof, not evidence of broad enterprise coverage. Expand to the planned synthetic corpus only after the first slice works; use multiple evaluation questions per issue pattern.
+- **Retrieval:** `retrieval-eval-v1` checks required guide and policy recall for 24 versioned synthetic questions and records source IDs, types, ranks, and similarities.
+- **Generation and grounding:** the server rejects fabricated source IDs and quotes, derives action citations from reviewed source metadata, and withholds actions when required guide or policy evidence is absent.
+- **Scope and governance:** unsupported and ambiguous requests abstain to human triage; privileged account or workspace change requests escalate without execution.
+- **Operations:** a target remains proposed until the same cohort is remeasured after a human-approved intervention.
+- **Economics and adoption:** potential gross saving must be separated from approved and realized saving. Adoption, override, user-satisfaction, and operating-cost metrics require future measurement; none are fabricated in this PoC.
+
+The current evaluation set is a regression control for two synthetic scenarios. It is not a general accuracy percentage, a claim of production reliability, or evidence that either intervention has reduced operational load.
+
+## Scale-up gate
+
+Before adding a new workflow such as provisioning, printer rollout, image upgrade, or vendor management, define the supported decision, authoritative evidence, structured data owner, safe action boundary, escalation owner, evaluation cases, and measurable follow-up KPI. This prevents feature expansion from becoming an ungoverned collection of AI demos.
