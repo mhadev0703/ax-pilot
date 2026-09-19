@@ -12,6 +12,8 @@ test("database timestamps accept explicit UTC offsets but reject missing timezon
 });
 import { publicError } from "../lib/errors";
 import { answer } from "../lib/rag/answer";
+import { selectScenarioEvidence } from "../lib/rag/retrieve";
+import { isWithinSupportedInvestigationScope } from "../lib/rag/scope";
 
 async function fixture() {
   const docs: RetrievedDocument[] = (await loadDocuments()).map((doc, index) => ({ ...doc, id: `00000000-0000-4000-8000-00000000000${index}`, similarity: 0.7 }));
@@ -154,6 +156,32 @@ test("embedding dimensions and numerical values are enforced", () => {
   assert.throws(() => validateEmbedding(Array(1536).fill(NaN)), /dimensions or values/);
   assert.throws(() => validateEmbedding(Array(1536).fill(0)), /dimensions or values/);
   assert.equal(validateEmbedding(Array(1536).fill(0.1)).length, 1536);
+});
+
+test("retrieval selection retains a scenario guide and policy without weakening the relevance gate", async () => {
+  const docs = (await loadDocuments()).map((doc, index) => ({
+    ...doc,
+    id: `00000000-0000-4000-8000-00000000002${index}`,
+    similarity: [0.8, 0.41, 0.74, 0.3, 0.91, 0.68, 0.83, 0.29][index],
+  })) as RetrievedDocument[];
+  const selected = selectScenarioEvidence([...docs].sort((left, right) => right.similarity - left.similarity));
+  assert.deepEqual(
+    selected.map((document) => document.source_id),
+    ["INC-2071", "MAIL-061", "KB-GW-004", "POL-GW-02"],
+  );
+
+  const belowThreshold = selectScenarioEvidence(
+    docs.map((document) => ({ ...document, similarity: 0.34 })),
+  );
+  assert.deepEqual(belowThreshold, []);
+});
+
+test("scope gate requires a supported system and recent-change context before retrieval", () => {
+  assert.equal(isWithinSupportedInvestigationScope("I reset my password and cannot access VDI."), true);
+  assert.equal(isWithinSupportedInvestigationScope("부서 이동 후 그룹웨어 새 팀 워크스페이스에 접근할 수 없습니다."), true);
+  assert.equal(isWithinSupportedInvestigationScope("I cannot access my tools. Please help."), false);
+  assert.equal(isWithinSupportedInvestigationScope("My VDI is slow."), false);
+  assert.equal(isWithinSupportedInvestigationScope("How do I renew a secure printer maintenance contract?"), false);
 });
 
 test("invalid requests are rejected before provider calls", () => {

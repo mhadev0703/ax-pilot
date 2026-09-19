@@ -3,7 +3,9 @@ import { randomUUID } from "node:crypto";
 import { performance } from "node:perf_hooks";
 import { getEnv } from "../env";
 import { answer } from "../rag/answer";
+import { insufficientEvidence } from "../rag/guardrails";
 import { retrieve } from "../rag/retrieve";
+import { isWithinSupportedInvestigationScope } from "../rag/scope";
 import { DATASET_VERSION, EMBEDDING_MODEL, RETRIEVAL_THRESHOLD, RETRIEVAL_TOP_K } from "../rag/config";
 import { investigationInputSchema } from "../rag/schema";
 import { getTicketAnalyticsFromDatabase } from "../analytics/database";
@@ -12,10 +14,17 @@ export async function investigate(input: unknown) {
   const { question } = investigationInputSchema.parse(input);
   const env = getEnv();
   const started = performance.now();
-  const documents = await retrieve(question);
+  const isInScope = isWithinSupportedInvestigationScope(question);
+  const documents = isInScope ? await retrieve(question) : [];
   const retrievedAt = performance.now();
-  const result = await answer(question, documents);
-  const ticketAnalytics = await getTicketAnalyticsFromDatabase();
+  const result = isInScope
+    ? await answer(question, documents)
+    : insufficientEvidence(
+        "The request does not state one of the supported system-and-change patterns. Human triage is required before retrieval.",
+      );
+  const ticketAnalytics = result.status === "recommendation"
+    ? await getTicketAnalyticsFromDatabase()
+    : null;
   return {
     requestId: randomUUID(),
     synthetic: true,
@@ -23,7 +32,7 @@ export async function investigate(input: unknown) {
     // Return actual sources separately from citations: retrieved does not mean used.
     retrievedEvidence: documents.map(({ metadata: _metadata, ...doc }) => doc),
     operationalInsight:
-      result.status === "recommendation" && result.classification.system === "VDI" && result.classification.category === "Authentication"
+      result.status === "recommendation" && result.classification.system === "VDI" && result.classification.category === "Authentication" && ticketAnalytics
         ? {
             status: "available" as const,
             scenario: "vdi_password_reset" as const,
@@ -36,7 +45,7 @@ export async function investigate(input: unknown) {
             target: ticketAnalytics.operationalImprovement.target,
             targetStatus: ticketAnalytics.operationalImprovement.targetStatus,
           }
-        : result.status === "recommendation" && result.classification.system === "Groupware" && result.classification.category === "Access"
+        : result.status === "recommendation" && result.classification.system === "Groupware" && result.classification.category === "Access" && ticketAnalytics
           ? {
               status: "available" as const,
               scenario: "groupware_transfer_access" as const,
