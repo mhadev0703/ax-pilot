@@ -111,6 +111,7 @@ npm run build
 - [Architecture](docs/architecture.md)
 - [AX framework](docs/ax-framework.md)
 - [Synthetic dataset provenance](docs/synthetic-data.md)
+- [Portfolio demo walkthrough and visual QA](docs/demo-walkthrough.md)
 
 ## Synthetic data disclaimer
 
