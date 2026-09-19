@@ -19,7 +19,7 @@ export const documentSchema = z.object({
   metadata: z.object({
     synthetic: z.literal(true),
     company: z.literal("Example Manufacturing"),
-    dataset_version: z.literal("ops-slice-1"),
+    dataset_version: z.literal("ops-slice-2"),
     allowed_actions: z.array(actionIdSchema),
   }),
 });

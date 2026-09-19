@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { readFile } from "node:fs/promises";
 import { JSDOM } from "jsdom";
 import { act } from "react";
+import { createVdiInvestigationFixture, insufficientEvidenceFixture } from "../fixtures/investigation";
 
 test("workspace supports review, evidence navigation, loading, failure, and abstention", async () => {
   const dom = new JSDOM(
@@ -34,13 +34,8 @@ test("workspace supports review, evidence navigation, loading, failure, and abst
   const { createRoot } = await import("react-dom/client");
   const { InvestigationWorkspace } =
     await import("../../components/investigation-workspace");
-  // Captured synthetic live responses are fixtures here; this test never calls providers.
-  const fixture = JSON.parse(
-    await readFile("tests/fixtures/vdi-investigation.json", "utf8"),
-  );
-  const negative = JSON.parse(
-    await readFile("tests/fixtures/negative-cases.json", "utf8"),
-  ).unrelated;
+  const fixture = await createVdiInvestigationFixture();
+  const negative = insufficientEvidenceFixture;
   const originalFetch = globalThis.fetch;
   let requests = 0;
   let complete: ((response: Response) => void) | undefined;
@@ -97,7 +92,7 @@ test("workspace supports review, evidence navigation, loading, failure, and abst
     assert.equal(document.querySelectorAll(".evidence-card").length, 4);
     assert.ok(text().includes("Hypothesis"));
     assert.ok(text().includes("Uncalibrated estimate"));
-    assert.ok(text().includes("87 VDI authentication tickets"));
+    assert.ok(text().includes("73 VDI authentication tickets"));
     assert.ok(text().includes("Proposed target, not measured impact"));
     const filter = document.querySelector("select")!;
     await act(async () => {

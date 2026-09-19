@@ -5,6 +5,7 @@ import {
   retrievalEvaluationCases,
   RETRIEVAL_EVALUATION_SET_VERSION,
 } from "../lib/rag/evaluation-cases";
+import { DATASET_VERSION } from "../lib/rag/config";
 import { retrieve } from "../lib/rag/retrieve";
 import { run } from "./common";
 
@@ -37,7 +38,7 @@ run(async () => {
     const report = {
       status: "passed",
       synthetic: true,
-      datasetVersion: "ops-slice-1",
+      datasetVersion: DATASET_VERSION,
       evaluationSetVersion: RETRIEVAL_EVALUATION_SET_VERSION,
       evaluatedCases: results.length,
       coverage: results.reduce<Record<string, number>>((counts, result) => {

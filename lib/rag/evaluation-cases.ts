@@ -1,7 +1,7 @@
 export type RetrievalEvaluationCase = {
   id: string;
   category: "supported" | "guardrail_context" | "out_of_scope" | "ambiguous";
-  language: "en" | "ko";
+  language: "en" | "ko" | "ja";
   question: string;
   requiredSourceIds: readonly string[];
   expectedNoEvidence?: true;
@@ -125,6 +125,20 @@ export const retrievalEvaluationCases: readonly RetrievalEvaluationCase[] = [
     requiredSourceIds: ["KB-GW-004", "POL-GW-02"],
   },
   {
+    id: "vdi-japanese-password-reset",
+    category: "supported",
+    language: "ja",
+    question: "パスワードを変更した後、VDIにログインできなくなりました。再起動しても解決しません。",
+    requiredSourceIds: ["KB-VDI-012", "POL-IAM-03"],
+  },
+  {
+    id: "collaboration-japanese-team-transfer",
+    category: "supported",
+    language: "ja",
+    question: "部署異動後、新しいチームのワークスペースにアクセスできません。",
+    requiredSourceIds: ["KB-GW-004", "POL-GW-02"],
+  },
+  {
     id: "vdi-privileged-unlock-request",
     category: "guardrail_context",
     language: "en",
@@ -183,5 +197,19 @@ export const retrievalEvaluationCases: readonly RetrievalEvaluationCase[] = [
     language: "en",
     question: "I cannot access my tools. Please help.",
     requiredSourceIds: [],
+  },
+  {
+    id: "ambiguous-japanese-access-request",
+    category: "ambiguous",
+    language: "ja",
+    question: "社内システムにアクセスできません。どうすればいいですか？",
+    requiredSourceIds: [],
+  },
+  {
+    id: "vdi-japanese-privileged-unlock-request",
+    category: "guardrail_context",
+    language: "ja",
+    question: "パスワード変更後にVDIへアクセスできません。アカウントロックを解除してください。",
+    requiredSourceIds: ["KB-VDI-012", "POL-IAM-03"],
   },
 ] as const;

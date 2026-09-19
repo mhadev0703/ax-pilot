@@ -51,6 +51,20 @@ const SCENARIOS = {
   },
 } as const;
 
+const privilegedActionRequest = /\bunlock\b|\badministrator\b|\bgrant\b.{0,40}\b(right|privilege|access)\b|\bbypass\b|계정.{0,20}(잠금.{0,10}해제|해제)|잠금.{0,10}해제|관리자|권한.{0,12}변경|ロック.{0,12}解除|ロック解除|管理者|権限.{0,12}変更/i;
+
+// Sensitive execution requests are an application-level boundary. The model
+// may still offer cited, read-only checks, but it cannot decide that approval
+// or escalation is unnecessary for a request to change access.
+export function applyRequestEscalation<T extends ReturnType<typeof groundAnalysis>>(result: T, question: string): T {
+  if (!privilegedActionRequest.test(question) || result.status !== "recommendation") return result;
+  return {
+    ...result,
+    escalationRequired: true,
+    escalationCondition: "An authorized administrator must review the requested account or access change. This platform cannot perform it.",
+  } as T;
+}
+
 export function insufficientEvidence(reason: string) {
   return {
     classification: { system: "Unknown", category: "Unknown", severity: "Unknown" },

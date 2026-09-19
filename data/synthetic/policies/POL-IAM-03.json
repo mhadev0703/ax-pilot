@@ -2,8 +2,8 @@
   "source_type": "policy",
   "source_id": "POL-IAM-03",
   "title": "VDI Password Reset Authentication Policy (비밀번호 변경 후 VDI 로그인)",
-  "content": "Synthetic IAM policy for Example Manufacturing. Repeated authentication failures may cause an AD account lock, including failures during VDI login after a password reset. IT Support may check account lock status. Only an authorized administrator may perform account modifications or privileged access changes. This decision-support platform must not modify accounts, unlock accounts, change privileges, or bypass authentication controls. This policy does not specify lockout thresholds or synchronization timing.",
+  "content": "Synthetic identity-access policy for Example Manufacturing. Repeated authentication failures may cause an account lock, including failures during VDI login after a password reset. IT Support may check account lock status. Only an authorized administrator may perform account modifications or privileged-access changes. This decision-support platform must not modify accounts, unlock accounts, change privileges, or bypass authentication controls. This policy does not specify lockout thresholds or synchronization timing.",
   "system": "VDI", "category": "Authentication", "department": "IT",
-  "created_at": "2026-08-01T09:00:00Z",
-  "metadata": { "synthetic": true, "company": "Example Manufacturing", "dataset_version": "ops-slice-1", "allowed_actions": ["verify_lock_status"] }
+  "created_at": "2027-04-03T09:00:00Z",
+  "metadata": { "synthetic": true, "company": "Example Manufacturing", "dataset_version": "ops-slice-2", "allowed_actions": ["verify_lock_status"] }
 }

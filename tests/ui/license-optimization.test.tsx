@@ -18,15 +18,15 @@ test("license review changes only local review state and never presents an execu
   };
   try {
     await act(async () => { root.render(<LicenseOptimization />); });
-    assert.ok(text().includes("380 seats"));
-    assert.ok(text().includes("$17,280"));
+    assert.ok(text().includes("535 seats"));
+    assert.ok(text().includes("$24,420"));
     assert.ok(text().includes("Human approval required"));
     assert.equal([...document.querySelectorAll("button")].some((element) => /execute|remove licenses|change contract/i.test(element.textContent ?? "")), false);
     await act(async () => { button("Approve for review").click(); });
     assert.ok(text().includes("Approved for external review"));
     assert.ok(text().includes("No contract or license operation was performed"));
-    await act(async () => { button("VDI Standard").click(); });
-    assert.ok(text().includes("VDI Standard"));
+    await act(async () => { button("Remote Workspace Access").click(); });
+    assert.ok(text().includes("Remote Workspace Access"));
     assert.ok(text().includes("Awaiting human review"));
     await act(async () => { button("Reject").click(); });
     assert.ok(text().includes("Rejected — no action taken"));

@@ -57,11 +57,11 @@ export async function investigate(input: unknown) {
               target: ticketAnalytics.groupwareOperationalImprovement.target,
               targetStatus: ticketAnalytics.groupwareOperationalImprovement.targetStatus,
               caveat:
-                "The measured Groupware Access cohort is not tagged to department transfers. The proposed checklist and notification require a transfer-specific follow-up measurement.",
+                "The measured Collaboration Platform Access cohort is not tagged to team transfers. The proposed checklist and notification require a transfer-specific follow-up measurement.",
             }
         : {
             status: "not_applicable" as const,
-            reason: "This request does not match a measured VDI password-reset or Groupware access cohort, so no unrelated operational insight is attached.",
+            reason: "This request does not match a measured VDI password-reset or Collaboration Platform access cohort, so no unrelated operational insight is attached.",
           },
     trace: {
       datasetVersion: DATASET_VERSION,

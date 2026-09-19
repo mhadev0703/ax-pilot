@@ -23,17 +23,17 @@ flowchart TD
 
 ## Current operational hypotheses
 
-**VDI authentication after password reset.** The current synthetic 30-day cohort has 87 VDI authentication tickets, 39 password-reset-related tickets, and a 24.1% repeat-contact rate. The proposed intervention is clearer password-reset communication, reconnect instructions, and a revised FAQ. The proposed KPI is a 30% reduction in repeat VDI authentication inquiries after a comparable 30-day follow-up. No reduction has been measured.
+**VDI authentication after password reset.** The current synthetic 30-day cohort has 73 VDI authentication tickets, 31 password-reset-related tickets, and a 23.3% repeat-contact rate. The proposed intervention is clearer password-reset communication, reconnect instructions, and a revised FAQ. The proposed KPI is a 30% reduction in repeat VDI authentication inquiries after a comparable 30-day follow-up. No reduction has been measured.
 
-**Groupware workspace access after transfer.** The current synthetic Groupware Access cohort has 58 tickets and a 20.7% repeat-contact rate. This cohort is not tagged to department transfers, so transfer checklist and role-synchronization communication are hypotheses, not observed causes. The next measurement must isolate transfer-related cases before assessing the proposed 20% reduction target.
+**Collaboration Platform workspace access after transfer.** The current synthetic Collaboration Platform Access cohort has 61 tickets and an 18.0% repeat-contact rate. This cohort is not tagged to team transfers, so transfer checklist and role-synchronization communication are hypotheses, not observed causes. The next measurement must isolate transfer-related cases before assessing the proposed 20% reduction target.
 
-**Collaboration-license renewal.** The Enterprise Collaboration Suite recommendation uses 302 90-day active users, 23 reserved seats, 35 upcoming-demand seats, a defined buffer, and a contract minimum. It recommends 380 renewal seats and $17,280 potential annual gross saving. The saving is neither approved nor realized.
+**Collaboration-license renewal.** The Collaboration Workspace Suite recommendation uses 431 90-day active users, 29 reserved seats, 44 upcoming-demand seats, a defined buffer, and a contract minimum. It recommends 535 renewal seats and $24,420 potential annual gross saving. The saving is neither approved nor realized.
 
 ## Evaluation before scale-up
 
 The project evaluates the whole workflow rather than treating fluent generated text as success.
 
-- **Retrieval:** `retrieval-eval-v1` checks required guide and policy recall for 24 versioned synthetic questions and records source IDs, types, ranks, and similarities.
+- **Retrieval:** `retrieval-eval-v1` checks required guide and policy recall for 28 versioned synthetic questions, including Japanese scope coverage, and records source IDs, types, ranks, and similarities.
 - **Generation and grounding:** the server rejects fabricated source IDs and quotes, derives action citations from reviewed source metadata, and withholds actions when required guide or policy evidence is absent.
 - **Scope and governance:** unsupported and ambiguous requests abstain to human triage; privileged account or workspace change requests escalate without execution.
 - **Operations:** a target remains proposed until the same cohort is remeasured after a human-approved intervention.

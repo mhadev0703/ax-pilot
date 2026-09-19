@@ -7,7 +7,7 @@ AXPilot is a bounded Enterprise IT operations decision-support PoC. It supports 
 ```mermaid
 flowchart LR
   Q[Support request] --> G{Supported scope gate}
-  G -->|VDI + password change\nor Groupware + transfer/role context| E[OpenAI embedding]
+  G -->|VDI + password change\nor Collaboration Platform + team/role context| E[OpenAI embedding]
   G -->|Missing context or out of scope| T[Human triage]
   E --> V[Supabase pgvector candidate pool]
   V --> D[Deterministic source-diversity selection]
@@ -22,7 +22,7 @@ flowchart LR
 
 ## Key decisions
 
-1. **Bound the supported requests before retrieval.** v0.7 accepts VDI authentication after a password change and Groupware workspace access after a department or role transfer. A request without the required system-and-change context is returned as insufficient evidence for human triage without calling retrieval or the response model. The gate is a scope control, not an issue diagnosis.
+1. **Bound the supported requests before retrieval.** v0.7 accepts VDI authentication after a password change and Collaboration Platform workspace access after a team or role transfer. A request without the required system-and-change context is returned as insufficient evidence for human triage without calling retrieval or the response model. The gate is a scope control, not an issue diagnosis.
 2. **Separate unstructured evidence from structured facts.** `enterprise_documents` stores synthetic Jira incidents, Confluence guides, support emails, and policies. `support_tickets` and `licenses` store synthetic operational inputs. Deterministic TypeScript calculates all counts, rates, quantities, and savings after validated Supabase reads.
 3. **Keep the vector space stable.** The seed and query path use `text-embedding-3-small` at 1,536 dimensions. SQL constrains model and dimension, and retrieval filters by dataset version. Changing either requires a coordinated migration and full re-embedding.
 4. **Use a bounded candidate pool with source diversity.** Retrieval fetches eight vector candidates, rejects the request when the best candidate is below the `0.35` relevance gate, then retains up to four documents from the leading system/category. One troubleshooting guide and one governance policy are retained when available; this prevents symptom-heavy incidents and emails from displacing action boundaries. The returned order preserves vector similarity rank.
@@ -33,9 +33,9 @@ flowchart LR
 
 ## Evaluation and verification
 
-`retrieval-eval-v1` contains 24 synthetic cases: 16 supported paraphrases across VDI and Groupware, including four Korean requests; three privileged or source-fabrication contexts; four out-of-scope requests; and one ambiguous request. It records source ID, type, similarity rank, and required guide/policy recall.
+`retrieval-eval-v1` contains 28 synthetic cases: 18 supported paraphrases across VDI and Collaboration Platform, including Korean and Japanese requests; four privileged or source-fabrication contexts; four out-of-scope requests; and two ambiguous requests. It records source ID, type, similarity rank, and required guide/policy recall.
 
-The evaluation is a regression set, not a model-accuracy benchmark. The ambiguous request is allowed to be informative to retrieval evaluation but must stop at the application scope gate in the live workflow. `npm run test:live` verifies grounded VDI and Groupware responses, out-of-scope abstention, ambiguous-request abstention, and privileged-request escalation. Saved paid-run output stays in ignored `outputs/` files without secrets.
+The evaluation is a regression set, not a model-accuracy benchmark. Ambiguous requests are allowed to be informative to retrieval evaluation but must stop at the application scope gate in the live workflow. `npm run test:live` verifies grounded VDI and Collaboration Platform responses, Japanese retrieval and guardrails, out-of-scope abstention, ambiguous-request abstention, and privileged-request escalation. Saved paid-run output stays in ignored `outputs/` files without secrets.
 
 ## v0.7 limits and extension gate
 

@@ -6,4 +6,4 @@ export const RETRIEVAL_TOP_K = 4;
 export const RETRIEVAL_CANDIDATE_COUNT = 8;
 // Initial PoC threshold, not an accuracy score. Calibrate with positive and negative queries.
 export const RETRIEVAL_THRESHOLD = 0.35;
-export const DATASET_VERSION = "ops-slice-1";
+export const DATASET_VERSION = "ops-slice-2";

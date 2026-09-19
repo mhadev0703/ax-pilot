@@ -2,8 +2,8 @@
   "source_type": "email",
   "source_id": "MAIL-028",
   "title": "VDI Access Issue After Password Change",
-  "content": "Synthetic support email at Example Manufacturing. User report: I changed my corporate password this morning. I can sign in to my laptop with the new password, but I cannot log into VDI. I still had a VDI session open before changing the password. This email records the symptoms only; no root cause or resolution has been verified.",
-  "system": "VDI", "category": "Authentication", "department": "Engineering",
-  "created_at": "2026-08-21T13:00:00Z",
-  "metadata": { "synthetic": true, "company": "Example Manufacturing", "dataset_version": "ops-slice-1", "allowed_actions": [] }
+  "content": "Synthetic support email at Example Manufacturing. User report: I changed my corporate password this morning. I can sign in to my laptop with the new password, but I cannot log into VDI. I still had a VDI session open before changing the password. This email records symptoms only; no root cause or resolution has been verified.",
+  "system": "VDI", "category": "Authentication", "department": "Product",
+  "created_at": "2027-04-14T13:00:00Z",
+  "metadata": { "synthetic": true, "company": "Example Manufacturing", "dataset_version": "ops-slice-2", "allowed_actions": [] }
 }

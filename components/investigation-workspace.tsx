@@ -74,9 +74,9 @@ const examples = [
       "회사 비밀번호를 변경한 뒤 노트북 로그인은 되는데 VDI 로그인이 되지 않습니다.",
   },
   {
-    label: "Groupware transfer access",
+    label: "Collaboration transfer access",
     question:
-      "I transferred departments and can sign in to groupware, but I cannot open my new team workspace.",
+      "I transferred teams and can sign in to the collaboration platform, but I cannot open my new team workspace.",
   },
   {
     label: "Outside current coverage",
@@ -100,6 +100,10 @@ function Mark({ type }: { type: string }) {
       )[type] ?? "D"}
     </span>
   );
+}
+
+function displaySystem(value: string) {
+  return value === "Groupware" ? "Collaboration Platform" : value;
 }
 
 export function InvestigationWorkspace() {
@@ -242,7 +246,7 @@ export function InvestigationWorkspace() {
             <h2>Knowledge coverage</h2>
             <span className="count">8</span>
           </div>
-          <p className="muted small">Two supported scenarios · VDI and Groupware</p>
+          <p className="muted small">Two supported scenarios · VDI and Collaboration Platform</p>
           <div className="source-list">
             {sources.map((source) => (
               <div className="source-row" key={source.id}>
@@ -258,7 +262,7 @@ export function InvestigationWorkspace() {
           <div className="coverage-note">
             <span className="eyebrow">SCOPE BOUNDARY</span>
             <p>
-              VDI authentication after password change, and Groupware workspace access after transfer. Other issues may require human triage.
+              VDI authentication after password change, and Collaboration Platform workspace access after team transfer. Other issues may require human triage.
             </p>
             <small>
               Source labels represent synthetic documents, not live
@@ -430,7 +434,7 @@ export function InvestigationWorkspace() {
                 {Object.entries(result.classification).map(([label, value]) => (
                   <div key={label}>
                     <span>{label}</span>
-                    <strong>{value}</strong>
+                    <strong>{label === "system" ? displaySystem(value) : value}</strong>
                   </div>
                 ))}
               </div>
@@ -587,7 +591,7 @@ export function InvestigationWorkspace() {
                 ) : (
                   <>
                     <p>
-                      {data.operationalInsight.groupwareAccessTickets} Groupware access tickets ·{" "}
+                      {data.operationalInsight.groupwareAccessTickets} Collaboration Platform access tickets ·{" "}
                       {data.operationalInsight.repeatContactRate}% repeat contact
                     </p>
                     <span className="subtle-tag">
@@ -602,7 +606,7 @@ export function InvestigationWorkspace() {
               ) : (
                 <>
                   <p>
-                    This scenario is not tied to a measured VDI password-reset or Groupware access cohort, so no unrelated KPI is attached.
+                    This scenario is not tied to a measured VDI password-reset or Collaboration Platform access cohort, so no unrelated KPI is attached.
                   </p>
                   <span className="subtle-tag">No unrelated KPI attached</span>
                   <small>

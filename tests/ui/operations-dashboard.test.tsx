@@ -32,7 +32,7 @@ test("support-volume chart renders both measured cohorts with labels", async () 
 
     assert.equal(document.querySelectorAll(".chart-line").length, 2);
     assert.ok(document.body.textContent?.includes("VDI authentication"));
-    assert.ok(document.body.textContent?.includes("Groupware access"));
+    assert.ok(document.body.textContent?.includes("Collaboration Platform access"));
     assert.ok(document.body.textContent?.includes("08/15"));
     assert.ok(document.querySelector("svg title")?.textContent?.includes("Daily support volume"));
   } finally {

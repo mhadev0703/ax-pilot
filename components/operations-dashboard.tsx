@@ -33,7 +33,7 @@ export async function OperationsDashboard() {
       <header className="topbar">
         <a className="brand" href="/dashboard">
           <span className="brand-symbol" aria-hidden="true">
-            N<span>↗</span>
+            A<span>↗</span>
           </span>
           <span>
             Enterprise IT <strong>AX</strong>
@@ -155,7 +155,7 @@ export async function OperationsDashboard() {
                 <Delta value={analytics.vdiAuthentication.change} />
               </div>
               <div>
-                <span>Groupware access</span>
+                <span>Collaboration Platform access</span>
                 <strong>{analytics.groupwareAccess.current}</strong>
                 <Delta value={analytics.groupwareAccess.change} invert />
               </div>

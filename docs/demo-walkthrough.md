@@ -16,9 +16,9 @@ Open `http://127.0.0.1:3000/dashboard`. The Dashboard and License Optimization p
 
 | Capture | Route and state | What the reviewer should see |
 | --- | --- | --- |
-| Operations signal | `/dashboard` at the default state | 30-day measurement window, KPI cards, VDI and Groupware trend chart, utilization comparison, and a proposed VDI improvement target rather than a claimed outcome |
+| Operations signal | `/dashboard` at the default state | 30-day measurement window, KPI cards, VDI and Collaboration Platform trend chart, utilization comparison, and a proposed VDI improvement target rather than a claimed outcome |
 | Evidence-backed investigation | `/investigate`, run `I reset my password and cannot access VDI.` | Classification, explicitly provisional likely cause, reviewed actions, escalation boundary, four retrieved evidence cards, and the VDI operational insight |
-| Human-reviewed license decision | `/optimization`, select Enterprise Collaboration Suite | Current seats, 90-day activity, 380-seat recommendation, $17,280 potential saving, decision factors, and the “Human approval required” boundary |
+| Human-reviewed license decision | `/optimization`, select Collaboration Workspace Suite | Current seats, 90-day activity, 535-seat recommendation, $24,420 potential saving, decision factors, and the “Human approval required” boundary |
 
 For the license screen, optionally click **Approve for review** to demonstrate the local review-state notice. Do not describe this as contract approval or execution.
 
@@ -39,7 +39,7 @@ Lead with the operating decision rather than the model:
 1. “The dashboard shows a measured support pattern and a proposed KPI, not an AI success claim.”
 2. “The investigation uses retrieved evidence, then limits recommendations to reviewed, read-only actions and escalation.”
 3. “The license quantity is deterministic and contract-aware; approval is intentionally outside the application.”
-4. “The project is a synthetic PoC. The 24-case evaluation set is regression evidence, not a production accuracy claim.”
+4. “The project is a synthetic PoC. The 28-case evaluation set is regression evidence, not a production accuracy claim.”
 
 ## Current verification status
 

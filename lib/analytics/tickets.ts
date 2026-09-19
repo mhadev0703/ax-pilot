@@ -1,5 +1,5 @@
-export const ANALYTICS_ANCHOR_DATE = "2026-09-14T00:00:00.000Z";
-export const ANALYTICS_DATASET_VERSION = "ticket-ops-slice-1";
+export const ANALYTICS_ANCHOR_DATE = "2027-05-06T00:00:00.000Z";
+export const ANALYTICS_DATASET_VERSION = "ticket-ops-slice-2";
 
 export type TicketSystem =
   | "VDI"
@@ -41,102 +41,102 @@ type Bucket = {
 };
 
 const departments = [
-  "Engineering",
-  "Manufacturing",
-  "Quality",
+  "Product",
+  "Operations",
+  "Customer Success",
   "Finance",
-  "HR",
-  "Procurement",
-  "IT",
+  "People",
+  "Commercial",
+  "IT Services",
 ];
 const currentBuckets: Bucket[] = [
   {
     system: "VDI",
     category: "Authentication",
-    count: 87,
-    passwordReset: 39,
-    repeats: 21,
-    aiAssisted: 47,
+    count: 73,
+    passwordReset: 31,
+    repeats: 17,
+    aiAssisted: 38,
   },
   {
     system: "Groupware",
     category: "Access",
-    count: 58,
-    repeats: 12,
-    aiAssisted: 28,
+    count: 61,
+    repeats: 11,
+    aiAssisted: 27,
   },
   {
     system: "Provisioning",
     category: "Provisioning",
-    count: 43,
-    repeats: 7,
-    aiAssisted: 18,
-    provisioningDelay: 24,
+    count: 47,
+    repeats: 8,
+    aiAssisted: 20,
+    provisioningDelay: 22,
   },
   {
     system: "Collaboration",
     category: "Application Support",
-    count: 38,
-    repeats: 5,
-    aiAssisted: 17,
+    count: 33,
+    repeats: 4,
+    aiAssisted: 14,
   },
   {
     system: "Device Lifecycle",
     category: "Device Support",
-    count: 34,
-    repeats: 4,
-    aiAssisted: 13,
+    count: 29,
+    repeats: 3,
+    aiAssisted: 11,
   },
   {
     system: "Printing",
     category: "Print Service",
-    count: 24,
+    count: 21,
     repeats: 2,
-    aiAssisted: 8,
+    aiAssisted: 6,
   },
 ];
 const previousBuckets: Bucket[] = [
   {
     system: "VDI",
     category: "Authentication",
-    count: 68,
-    passwordReset: 26,
-    repeats: 16,
+    count: 56,
+    passwordReset: 20,
+    repeats: 13,
     aiAssisted: 0,
   },
   {
     system: "Groupware",
     category: "Access",
-    count: 66,
+    count: 68,
     repeats: 12,
     aiAssisted: 0,
   },
   {
     system: "Provisioning",
     category: "Provisioning",
-    count: 37,
-    repeats: 6,
+    count: 38,
+    repeats: 5,
     aiAssisted: 0,
-    provisioningDelay: 22,
+    provisioningDelay: 18,
   },
   {
     system: "Collaboration",
     category: "Application Support",
-    count: 32,
-    repeats: 4,
+    count: 27,
+    repeats: 3,
     aiAssisted: 0,
   },
   {
     system: "Device Lifecycle",
     category: "Device Support",
-    count: 27,
+    count: 23,
     repeats: 3,
     aiAssisted: 0,
   },
   {
     system: "Printing",
     category: "Print Service",
-    count: 20,
+    count: 18,
     repeats: 2,
     aiAssisted: 0,
   },
@@ -170,20 +170,20 @@ function buildWindow(prefix: string, start: string, buckets: Bucket[]) {
 // Canonical local source for seed scripts and offline tests. Runtime analytics
 // reads the equivalent synthetic rows from Supabase through database.ts.
 export const syntheticSupportTickets: SupportTicket[] = [
-  ...buildWindow("SYN-CUR", "2026-08-15T00:00:00.000Z", currentBuckets),
-  ...buildWindow("SYN-PRV", "2026-07-16T00:00:00.000Z", previousBuckets),
+  ...buildWindow("SYN-CUR", "2027-04-06T00:00:00.000Z", currentBuckets),
+  ...buildWindow("SYN-PRV", "2027-03-07T00:00:00.000Z", previousBuckets),
 ];
 
 export const ANALYTICS_WINDOWS = {
   current: {
-    label: "Aug 15 – Sep 13, 2026",
-    start: "2026-08-15T00:00:00.000Z",
+    label: "Apr 6 – May 5, 2027",
+    start: "2027-04-06T00:00:00.000Z",
     end: ANALYTICS_ANCHOR_DATE,
   },
   previous: {
-    label: "Jul 16 – Aug 14, 2026",
-    start: "2026-07-16T00:00:00.000Z",
-    end: "2026-08-15T00:00:00.000Z",
+    label: "Mar 7 – Apr 5, 2027",
+    start: "2027-03-07T00:00:00.000Z",
+    end: "2027-04-06T00:00:00.000Z",
   },
 } as const;
 
@@ -353,17 +353,17 @@ export function calculateTicketAnalytics(tickets: SupportTicket[]) {
       targetStatus: "proposed_not_measured" as const,
     },
     groupwareOperationalImprovement: {
-      title: "Department transfer → workspace access readiness",
+      title: "Team transfer → workspace access readiness",
       observation:
-        "The measured Groupware Access cohort does not isolate department-transfer cases. A transfer checklist and role-synchronization communication are proposed hypotheses for reducing repeat contacts in that scenario.",
+        "The measured Collaboration Platform Access cohort does not isolate team-transfer cases. A transfer checklist and role-synchronization communication are proposed hypotheses for reducing repeat contacts in that scenario.",
       recommendation: [
-        "Add workspace access steps to the department-transfer checklist",
+        "Add workspace access steps to the team-transfer checklist",
         "Send a role-synchronization and reconnect notification after approved transfers",
         "Route unresolved access to Enterprise Applications Support",
         "Measure the transfer-related cohort separately for 30 days",
       ],
       target: {
-        metric: "Repeat Groupware workspace-access inquiries after department transfer",
+        metric: "Repeat collaboration-platform workspace-access inquiries after team transfer",
         relativeReduction: 20,
         direction: "reduce" as const,
       },

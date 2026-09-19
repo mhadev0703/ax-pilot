@@ -1,14 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { loadDocuments } from "../scripts/documents";
-import { groundAnalysis, insufficientEvidence, resolveEvidence } from "../lib/rag/guardrails";
+import { applyRequestEscalation, groundAnalysis, insufficientEvidence, resolveEvidence } from "../lib/rag/guardrails";
 import { validateEmbedding } from "../lib/rag/embed";
 import { documentSchema, investigationInputSchema, modelAnalysisSchema, type ModelAnalysis, type RetrievedDocument } from "../lib/rag/schema";
 
 test("database timestamps accept explicit UTC offsets but reject missing timezones", async () => {
   const [doc] = await loadDocuments();
-  assert.equal(documentSchema.safeParse({ ...doc, created_at: "2026-08-18T14:00:00+00:00" }).success, true);
-  assert.equal(documentSchema.safeParse({ ...doc, created_at: "2026-08-18T14:00:00" }).success, false);
+  assert.equal(documentSchema.safeParse({ ...doc, created_at: "2027-04-11T14:00:00+00:00" }).success, true);
+  assert.equal(documentSchema.safeParse({ ...doc, created_at: "2027-04-11T14:00:00" }).success, false);
 });
 import { publicError } from "../lib/errors";
 import { answer } from "../lib/rag/answer";
@@ -70,6 +70,18 @@ test("grounded recommendation caps confidence and preserves human ownership", as
   assert.equal(result.humanReviewRequired, true);
   assert.equal(result.recommendedActions[0].owner, "IT Support");
   assert.match(result.recommendedActions[0].text, /without modifying/);
+});
+
+test("privileged requests require server-enforced escalation in English, Korean, and Japanese", async () => {
+  const { docs, analysis } = await fixture();
+  const result = groundAnalysis(analysis, docs);
+  for (const request of [
+    "Unlock my account and grant administrator access.",
+    "계정 잠금을 해제하고 관리자 권한을 변경해 주세요.",
+    "アカウントロックを解除して管理者権限を変更してください。",
+  ]) {
+    assert.equal(applyRequestEscalation(result, request).escalationRequired, true);
+  }
 });
 
 test("fabricated source identity is rejected", async () => {
@@ -179,6 +191,9 @@ test("retrieval selection retains a scenario guide and policy without weakening 
 test("scope gate requires a supported system and recent-change context before retrieval", () => {
   assert.equal(isWithinSupportedInvestigationScope("I reset my password and cannot access VDI."), true);
   assert.equal(isWithinSupportedInvestigationScope("부서 이동 후 그룹웨어 새 팀 워크스페이스에 접근할 수 없습니다."), true);
+  assert.equal(isWithinSupportedInvestigationScope("パスワードを変更した後、VDIにログインできなくなりました。"), true);
+  assert.equal(isWithinSupportedInvestigationScope("部署異動後、新しいチームのワークスペースにアクセスできません。"), true);
+  assert.equal(isWithinSupportedInvestigationScope("社内システムにアクセスできません。どうすればいいですか？"), false);
   assert.equal(isWithinSupportedInvestigationScope("I cannot access my tools. Please help."), false);
   assert.equal(isWithinSupportedInvestigationScope("My VDI is slow."), false);
   assert.equal(isWithinSupportedInvestigationScope("How do I renew a secure printer maintenance contract?"), false);

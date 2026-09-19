@@ -26,11 +26,11 @@ export function SupportVolumeChart({ points }: { points: VolumePoint[] }) {
     <div className="support-volume-chart">
       <div className="chart-legend" aria-label="Chart legend">
         <span><i className="legend-line vdi" />VDI authentication</span>
-        <span><i className="legend-line groupware" />Groupware access</span>
+        <span><i className="legend-line groupware" />Collaboration Platform access</span>
       </div>
       <svg viewBox="0 0 720 152" role="img" aria-labelledby="support-volume-title support-volume-description">
         <title id="support-volume-title">Daily support volume by cohort</title>
-        <desc id="support-volume-description">Daily synthetic ticket counts for VDI authentication and Groupware access during the current 30-day measurement window.</desc>
+        <desc id="support-volume-description">Daily synthetic ticket counts for VDI authentication and Collaboration Platform access during the current 30-day measurement window.</desc>
         {[0.25, 0.5, 0.75].map((ratio) => (
           <line key={ratio} className="chart-gridline" x1="10" x2="710" y1={12 + ratio * 128} y2={12 + ratio * 128} />
         ))}

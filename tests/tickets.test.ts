@@ -9,32 +9,32 @@ import {
 
 test("ticket analytics derives the dashboard KPI values from raw synthetic tickets", () => {
   const analytics = calculateTicketAnalytics(syntheticSupportTickets);
-  assert.equal(syntheticSupportTickets.length, 534);
-  assert.equal(analytics.supportRequests, 284);
-  assert.equal(analytics.previousSupportRequests, 250);
-  assert.deepEqual(analytics.aiAssisted, { count: 131, rate: 46.1 });
-  assert.deepEqual(analytics.repeatContact, { count: 51, rate: 18 });
+  assert.equal(syntheticSupportTickets.length, 494);
+  assert.equal(analytics.supportRequests, 264);
+  assert.equal(analytics.previousSupportRequests, 230);
+  assert.deepEqual(analytics.aiAssisted, { count: 116, rate: 43.9 });
+  assert.deepEqual(analytics.repeatContact, { count: 45, rate: 17 });
   assert.deepEqual(analytics.vdiAuthentication, {
-    current: 87,
-    previous: 68,
-    change: 27.9,
+    current: 73,
+    previous: 56,
+    change: 30.4,
   });
   assert.deepEqual(analytics.passwordResetRelated, {
-    current: 39,
-    previous: 26,
+    current: 31,
+    previous: 20,
   });
-  assert.equal(analytics.vdiRepeatContactRate, 24.1);
+  assert.equal(analytics.vdiRepeatContactRate, 23.3);
   assert.deepEqual(analytics.provisioningDelay, {
-    current: 24,
-    previous: 22,
-    change: 9.1,
+    current: 22,
+    previous: 18,
+    change: 22.2,
   });
   assert.deepEqual(analytics.groupwareAccess, {
-    current: 58,
-    previous: 66,
-    change: -12.1,
+    current: 61,
+    previous: 68,
+    change: -10.3,
   });
-  assert.equal(analytics.groupwareRepeatContactRate, 20.7);
+  assert.equal(analytics.groupwareRepeatContactRate, 18);
   assert.equal(
     analytics.groupwareOperationalImprovement.target.relativeReduction,
     20,
@@ -42,14 +42,14 @@ test("ticket analytics derives the dashboard KPI values from raw synthetic ticke
   assert.equal(analytics.dailySupportVolume.length, 30);
   assert.equal(
     analytics.dailySupportVolume.reduce((total, day) => total + day.vdiAuthentication, 0),
-    87,
+    73,
   );
   assert.equal(
     analytics.dailySupportVolume.reduce((total, day) => total + day.groupwareAccess, 0),
-    58,
+    61,
   );
-  assert.equal(analytics.measurement.current.label, "Aug 15 – Sep 13, 2026");
-  assert.equal(analytics.measurement.previous.label, "Jul 16 – Aug 14, 2026");
+  assert.equal(analytics.measurement.current.label, "Apr 6 – May 5, 2027");
+  assert.equal(analytics.measurement.previous.label, "Mar 7 – Apr 5, 2027");
 });
 
 test("synthetic ticket flags remain inside their defined cohorts and windows do not overlap", () => {
@@ -81,7 +81,7 @@ test("synthetic ticket flags remain inside their defined cohorts and windows do 
 
 test("database-shaped ticket rows use the same deterministic KPI calculation", () => {
   const analytics = calculateTicketAnalyticsFromDatabaseRows(syntheticSupportTickets);
-  assert.equal(analytics.supportRequests, 284);
+  assert.equal(analytics.supportRequests, 264);
   assert.equal(analytics.operationalImprovement.target.relativeReduction, 30);
   assert.equal(analytics.synthetic, true);
 });
